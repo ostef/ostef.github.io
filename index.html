@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="./picocss/pico.css" />
     <link rel="stylesheet" href="./theme.css" />
     <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
     <script>
 
 const PreviewImage = function (img_elem)
@@ -21,21 +24,30 @@ const CloseImagePreview = function ()
     document.getElementById ("image-preview-modal").style.display = "none";
 }
 
-    </script>
-</head>
+const ScrollTo = function (id)
+{
+    const elem = document.getElementById (id);
+    if (elem)
+        elem.scrollIntoView ({behavior: "smooth"});
+}
 
-<body>
-    <script>
+const Disappear = function (elem, duration = 300)
+{
+    const anim = elem.animate ([ {opacity: 0} ], {duration: duration});
+    anim.onfinish = function () {
+        elem.style.display = "none";
+    }
+}
 
 document.body.onscroll = function ()
 {
     const D = document.documentElement;
-    const appear_on_scroll = document.getElementsByClassName ("appear-on-scroll");
 
+    const appear_on_scroll = document.getElementsByClassName ("appear-on-scroll");
     for (const elem of appear_on_scroll)
     {
-        const anims = elem.getAnimations ();
-        if (anims.find (val => val.id == "scroll-appearing"))
+        const opacity = window.getComputedStyle (elem).getPropertyValue ("opacity");
+        if (opacity > 0)
             continue;
 
         const revealMargin = 200;
@@ -51,6 +63,20 @@ document.body.onscroll = function ()
             }
         }
     }
+
+    const disappear_on_scroll = document.getElementsByClassName ("disappear-on-scroll");
+    for (const elem of disappear_on_scroll)
+    {
+        const opacity = window.getComputedStyle (elem).getPropertyValue ("opacity");
+        if (opacity < 1 || elem.style.display == "none")
+            continue;
+
+        const anim = elem.animate ([ {opacity: 0} ], {id: "scroll-disappearing", duration: 300});
+
+        anim.onfinish = function () {
+            elem.style.display = "none";
+        }
+    }
 }
 
     </script>
@@ -62,11 +88,12 @@ document.body.onscroll = function ()
                 <img style="border-radius: 50%; margin: auto;" src="./images/me.jpg" width=250 height=250 />
                 <div style="margin: auto;">
                     <h3>I'm <strong>Stéfan</strong>, a 21 years old passionate programmer and video game enthusiast.
-                    I love to take on interesting and challenging <a href="#projects">video game related projects</a>.</h3>
+                    I love to take on interesting and challenging <a onclick="ScrollTo ('projects')">video game related projects</a>.</h3>
                     <small>Reach me out via <a href="mailto:oumansour.stefan@gmail.com">oumansour.stefan@gmail.com</a></small><br>
                     <a href="https://github.com/ostef" target="_blank">GitHub</a> - <a href="https://www.linkedin.com/in/st%C3%A9fan-oumansour-7a03061bb/" target="_blank">Linkedin</a>
                 </div>
             </div>
+            <button class="disappear-on-scroll" onclick="ScrollTo ('background'); Disappear (this)">↓ Scroll Down ↓</button>
         </section>
 
         <section id="background" class="text-section appear-on-scroll">
@@ -83,14 +110,17 @@ document.body.onscroll = function ()
         <section id="projects" class="text-section appear-on-scroll">
             <h4 class="section-title">Projects</h4>
             <section id="cubed" class="appear-on-scroll project-presentation">
-                <h4 class="project-title">Cubed</h4>
+                <h4 class="project-title">
+                    <a href="https://github.com/ostef/Cubed" target="_blank">
+                    Cubed
+                    </a>
+                </h4>
                 <div class="grid">
                     <div>
                         <p style="font-size: 0.9rem;">
                             Cubed is a video game project that I started along my game development learning journey.
                             The goal was to produce a high quality, polished and playable Minecraft clone, featuring complex world generation,
                             high quality rendering, animations, monsters and multiplayer. It is currently 30k LOC and I am still actively working on it.<br>
-                            <a href="https://github.com/ostef/Cubed" target="_blank">Check it out on GitHub!</a>
                         </p>
                         <p style="font-size: 0.9rem; margin-bottom: 10px;">
                             Here's what is featured in Cubed as of now:
@@ -119,7 +149,11 @@ document.body.onscroll = function ()
             </section>
 
             <section id="skeletal-animation" class="appear-on-scroll">
-                <h4 class="project-title">Skeletal Animation</h4>
+                <h4 class="project-title">
+                    <a href="https://github.com/ostef/skeletal-animation-example" target="_blank">
+                        Skeletal Animation
+                    </a>
+                </h4>
                 <div class="grid">
                     <div>
                         <img class="preview-image" src="./images/skeletal-animation02.png" alt="Skeletal-Animation" width=500px onclick="PreviewImage (this)">
@@ -127,7 +161,6 @@ document.body.onscroll = function ()
                     </div>
                     <p style="font-size: 0.9rem;">
                         In May 2022, the developper of the Jai programming language was looking for example programs to show off the language, so I started working on skeletal-animation. This program loads a desired 3d mesh and animation, and plays it back on the screen, allowing the user to freely move the camera around it and tweak certain parameters via a user interface. It features a custom Blender exporter for skinned meshes and animations in a text based format. I used this exporter code later for Cubed, extending and modifying it to export in binary format. The animations featured in the program were hand-made by me, as well as the 3d mesh.<br>
-                        <a href="https://github.com/ostef/skeletal-animation-example" target="_blank">Check it out on GitHub!</a>
                     </p>
                 </div>
             </section>
@@ -183,6 +216,7 @@ document.body.onscroll = function ()
                 Developped by Stéfan Oumansour, 2023<br>
                 Inspired by <a href="https://joebrogers.com/" target="_blank">Joeb Rogers</a>
             </h5>
+            <a href="https://github.com/ostef" target="_blank">GitHub</a> - <a href="https://www.linkedin.com/in/st%C3%A9fan-oumansour-7a03061bb/" target="_blank">Linkedin</a>
         </div>
     </footer>
 
