@@ -1,1 +1,198 @@
-Hello World
+<!DOCTYPE html>
+<html data-theme="light">
+
+<head>
+    <title>Stefan Oumansour</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./picocss/pico.css" />
+    <link rel="stylesheet" href="./theme.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <script>
+
+const PreviewImage = function (img_elem)
+{
+    document.getElementById ("image-preview-modal").style.display = "block";
+    document.getElementById ("preview-image").src = img_elem.src;
+    document.getElementById ("preview-caption").innerHTML = img_elem.alt;
+}
+
+const CloseImagePreview = function ()
+{
+    document.getElementById ("image-preview-modal").style.display = "none";
+}
+
+    </script>
+</head>
+
+<body>
+    <script>
+
+document.body.onscroll = function ()
+{
+    const D = document.documentElement;
+    const appear_on_scroll = document.getElementsByClassName ("appear-on-scroll");
+
+    for (const elem of appear_on_scroll)
+    {
+        const anims = elem.getAnimations ();
+        if (anims.find (val => val.id == "scroll-appearing"))
+            continue;
+
+        const revealMargin = 200;
+        if (revealMargin >= elem.clientHeight)
+            revealMargin = elem.clientHeight - 1;
+
+        if (D.scrollTop + D.clientHeight > elem.offsetTop + revealMargin)
+        {
+            const anim = elem.animate ([ {opacity: 1} ], {id: "scroll-appearing", duration: 400});
+
+            anim.onfinish = function () {
+                elem.style.opacity = 1;
+            }
+        }
+    }
+}
+
+    </script>
+
+    <section class="container">
+
+        <section id="presentation">
+            <div class="grid" style="height: 90%; margin: auto;">
+                <img style="border-radius: 50%; margin: auto;" src="./images/me.jpg" width=250 height=250 />
+                <div style="margin: auto;">
+                    <h3>I'm <strong>Stéfan</strong>, a 21 years old passionate programmer and video game enthusiast.
+                    I love to take on interesting and challenging <a href="#projects">video game related projects</a>.</h3>
+                    <small>Reach me out via <a href="mailto:oumansour.stefan@gmail.com">oumansour.stefan@gmail.com</a></small><br>
+                    <a href="https://github.com/ostef" target="_blank">GitHub</a> - <a href="https://www.linkedin.com/in/st%C3%A9fan-oumansour-7a03061bb/" target="_blank">Linkedin</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="background" class="text-section appear-on-scroll">
+            <h4 class="section-title">Background</h4>
+            <p>
+            I'm a 21 years old passionate programmer and video game enthusiast, currently at <strong>42 school in Lyon, France</strong>.
+            I'm currently learning video game development and low level programming through many different projects, ranging from game engines, video games, text editors and programming languages.
+            This journey started over 10 years ago when I got my first computer, and started making 2d games using Game Maker.
+            I've since used many different languages and engines, such as <strong>Unity</strong>, <strong>Unreal Engine</strong>, <strong>MonoGame</strong> and even made engines myself.
+            I'm also interested in programming languages, and I've been part of the <strong>Jai closed beta</strong> since the end of 2020.
+            </p>
+        </section>
+
+        <section id="projects" class="text-section appear-on-scroll">
+            <h4 class="section-title">Projects</h4>
+            <section id="cubed" class="appear-on-scroll project-presentation">
+                <h4 class="project-title">Cubed</h4>
+                <div class="grid">
+                    <div>
+                        <p style="font-size: 0.9rem;">
+                            Cubed is a video game project that I started along my game development learning journey.
+                            The goal was to produce a high quality, polished and playable Minecraft clone, featuring complex world generation,
+                            high quality rendering, animations, monsters and multiplayer. It is currently 30k LOC and I am still actively working on it.<br>
+                            <a href="https://github.com/ostef/Cubed" target="_blank">Check it out on GitHub!</a>
+                        </p>
+                        <p style="font-size: 0.9rem; margin-bottom: 10px;">
+                            Here's what is featured in Cubed as of now:
+
+                            <ul style="font-size: 0.8rem;">
+                                <li>Procedural terrain generation,</li>
+                                <li>ImGui integration,</li>
+                                <li>Biomes,</li>
+                                <li>Basic terrain viewer,</li>
+                                <li>Collision detection and response,</li>
+                                <li>Water physics,</li>
+                                <li>Third person and first person view,</li>
+                                <li>Hand-made player animations,</li>
+                                <li>Custom Blender animation and mesh exporter,</li>
+                                <li>Animation blending and state machines,</li>
+                                <li>Breaking and placing blocks,</li>
+                                <li>Simple shader preprocessor</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div>
+                        <img class="preview-image" src="./images/cubed01.png" alt="Mountains and terrain view" width=500px onclick="PreviewImage (this)">
+                        <img class="preview-image" src="./images/cubed02.png" alt="Third person view and animations!" width=500px onclick="PreviewImage (this)">
+                    </div>
+                </div>
+            </section>
+
+            <section id="skeletal-animation" class="appear-on-scroll">
+                <h4 class="project-title">Skeletal Animation</h4>
+                <div class="grid">
+                    <div>
+                        <img class="preview-image" src="./images/skeletal-animation02.png" alt="Skeletal-Animation" width=500px onclick="PreviewImage (this)">
+                        <img class="preview-image" src="./images/skeletal-animation01.png" alt="Skeletal-Animation" width=500px onclick="PreviewImage (this)">
+                    </div>
+                    <p style="font-size: 0.9rem;">
+                        In May 2022, the developper of the Jai programming language was looking for example programs to show off the language, so I started working on skeletal-animation. This program loads a desired 3d mesh and animation, and plays it back on the screen, allowing the user to freely move the camera around it and tweak certain parameters via a user interface. It features a custom Blender exporter for skinned meshes and animations in a text based format. I used this exporter code later for Cubed, extending and modifying it to export in binary format. The animations featured in the program were hand-made by me, as well as the 3d mesh.<br>
+                        <a href="https://github.com/ostef/skeletal-animation-example" target="_blank">Check it out on GitHub!</a>
+                    </p>
+                </div>
+            </section>
+
+        </section>
+
+        <section id="skills" class="text-section appear-on-scroll">
+            <h3 class="section-title">Skills</h4>
+            <div class="grid">
+                <div>
+                    <strong>Languages</strong>
+                    <ul>
+                        <li>C</li>
+                        <li>C++</li>
+                        <li>C#</li>
+                        <li>Jai</li>
+                        <li>x86 Assembly</li>
+                        <li>Python</li>
+                        <li>Javascript</li>
+                        <li>HTML/CSS</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <strong>Engines & Libraries</strong>
+                    <ul>
+                        <li>Unity</li>
+                        <li>Unreal Engine</li>
+                        <li>Game Maker Studio</li>
+                        <li>MonoGame</li>
+                        <li>ImGui</li>
+                        <li>OpenGL</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <strong>Fields</strong>
+                    <ul>
+                        <li>Engine</li>
+                        <li>Animation</li>
+                        <li>Graphics</li>
+                        <li>Tools</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </section>
+
+    <footer class="container">
+        <div style="width: 20%;">
+            <h5 style="font-size: medium; font-weight: 600;">
+                Developped by Stéfan Oumansour, 2023<br>
+                Inspired by <a href="https://joebrogers.com/" target="_blank">Joeb Rogers</a>
+            </h5>
+        </div>
+    </footer>
+
+    <div id="image-preview-modal" class="modal">
+        <span class="close" onclick="CloseImagePreview ()">&times;</span>
+        <div class="modal-content">
+            <img id="preview-image">
+            <div id="preview-caption"></div>
+        </div>
+    </div>
+</body>
+
+</html>
