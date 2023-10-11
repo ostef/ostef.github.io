@@ -6,8 +6,32 @@
     height: 100vh;
 }
 
+#presentation-content {
+    height: 90%;
+    margin: auto;
+}
+
+#presentation-img {
+    width: 50%;
+    min-width: 100px;
+    max-width: 250px;
+    border-radius: 50%;
+    margin: auto;
+}
+
+@media (max-width: 991px) {
+    #presentation-img {
+        display: none;
+    }
+}
+
+#presentation-text {
+    margin: auto;
+}
+
 #dark-mode-button {
     position: fixed;
+    right: 1rem;
     margin: 1rem;
     cursor: pointer;
     transition: 0.3s;
@@ -21,6 +45,19 @@
     width: 60%;
     margin-left: 20%;
     margin-right: 10%;
+}
+
+@media (max-width: 767px) {
+    .text-section {
+        width: calc(100% - 40px);
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+
+#footer-text>h5 {
+    font-size: medium;
+    font-weight: 600;
 }
 
 .appear-on-scroll {

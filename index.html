@@ -4,6 +4,7 @@
 <head>
     <title>Stefan Oumansour</title>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="./picocss/pico.css" />
     <link rel="stylesheet" href="./theme.css" />
     <link rel="stylesheet" href="./style.css" />
@@ -104,9 +105,9 @@ document.body.onscroll = function ()
     <section class="container">
 
         <section id="presentation">
-            <div class="grid" style="height: 90%; margin: auto;">
-                <img style="border-radius: 50%; margin: auto;" src="./images/me.jpg" width=250 height=250 />
-                <div style="margin: auto;">
+            <div id="presentation-content" class="grid">
+                <img id="presentation-img" src="./images/me.jpg" />
+                <div id="presentation-text">
                     <h3>I'm <strong>Stéfan</strong>, a 21 years old passionate programmer and video game enthusiast.
                     I love to take on interesting and challenging <a style="cursor: pointer;" onclick="ScrollTo ('projects')">video game related projects</a>.</h3>
                     <small>Reach me out via <a href="mailto:oumansour.stefan@gmail.com">oumansour.stefan@gmail.com</a></small><br>
@@ -123,7 +124,7 @@ document.body.onscroll = function ()
             I'm currently learning video game development and low level programming through many different projects, ranging from game engines, video games, text editors and programming languages.
             This journey started over 10 years ago when I got my first computer, and started making 2d games using Game Maker.
             I've since used many different languages and engines, such as <strong>Unity</strong>, <strong>Unreal Engine</strong>, <strong>MonoGame</strong> and even made engines myself.
-            I'm also interested in programming languages, and I've been part of the <strong>Jai closed beta</strong> since the end of 2020.
+            I'm also interested in programming languages, and I've been part of the Jai closed beta since the end of 2020.
             </p>
         </section>
 
@@ -233,8 +234,8 @@ document.body.onscroll = function ()
     </section>
 
     <footer class="container">
-        <div style="width: 20%;">
-            <h5 style="font-size: medium; font-weight: 600;">
+        <div id="footer-text">
+            <h5>
                 Developped by Stéfan Oumansour, 2023<br>
                 Inspired by <a href="https://joebrogers.com/" target="_blank">Joeb Rogers</a>
             </h5>
