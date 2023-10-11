@@ -39,6 +39,24 @@ const Disappear = function (elem, duration = 300)
     }
 }
 
+const ToggleDarkMode = function ()
+{
+    const html = document.documentElement;
+    const theme = html.getAttribute ("data-theme");
+    const btn = document.getElementById ("dark-mode-button");
+
+    if (theme === "light")
+    {
+        btn.setAttribute ("src", "./images/light-mode.png");
+        html.setAttribute ("data-theme", "dark");
+    }
+    else
+    {
+        btn.setAttribute ("src", "./images/dark-mode.png");
+        html.setAttribute ("data-theme", "light");
+    }
+}
+
 document.body.onscroll = function ()
 {
     const D = document.documentElement;
@@ -80,6 +98,8 @@ document.body.onscroll = function ()
 }
 
     </script>
+
+    <img id="dark-mode-button" src="./images/dark-mode.png" onclick="ToggleDarkMode ()" width=50>
 
     <section class="container">
 

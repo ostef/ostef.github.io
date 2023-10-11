@@ -2,6 +2,17 @@
     height: 100vh;
 }
 
+#dark-mode-button {
+    position: fixed;
+    margin: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#dark-mode-button:hover {
+    opacity: 0.5;
+}
+
 .text-section {
     width: 60%;
     margin-left: 20%;
