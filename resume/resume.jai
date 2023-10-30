@@ -1,3 +1,4 @@
+Basic :: #import "Basic";
 #import "Common";
 Fenetres :: #import "Fenetres";
 Fenetres_GL :: #import "Fenetres/GL";
@@ -8,6 +9,8 @@ Stylo :: #import "Stylo" (Origin_Top_Left = true);
 
 #load "localization.jai";
 
+g_font_regular : *Stylo.Font;
+g_font_bold : *Stylo.Font;
 me : Stylo.TextureHandle;
 
 Lang :: Language.French;
@@ -18,7 +21,7 @@ Canvas_Height :: 29.7 * Scale;
 
 Font_Big :: 0.9 * Scale;
 Font_Medium :: 0.7 * Scale;
-Font_Small :: 0.5 * Scale;
+Font_Small :: 0.46 * Scale;
 
 Background_Color :: Vec4f.{0.9,0.9,0.9,1};
 
@@ -31,8 +34,8 @@ Global_Margin :: 0.5 * Scale;
 Image_Radius :: 2.5 * Scale;
 Image_Margin :: Global_Margin * 2;
 
-Left_Col_Width :: 0.4;  // Percent
-Right_Col_Width :: 0.6;  // Percent
+Left_Col_Width :: 0.35;  // Percent
+Right_Col_Width :: 0.65;  // Percent
 
 Left_Col :: Stylo.Rect.{
     Global_Margin,
@@ -48,16 +51,67 @@ Right_Col :: Stylo.Rect.{
     Canvas_Height - Global_Margin * 2
 };
 
-LoadTexture :: ($filename : string) -> Stylo.TextureHandle #must
+Main_Rect_Top :: 3.0 * Scale;
+
+Main_Rect :: Stylo.Rect.{
+    Canvas_Width * Left_Col_Width + Global_Margin,
+    Main_Rect_Top + Global_Margin,
+    Canvas_Width * Right_Col_Width - Global_Margin * 2,
+    Canvas_Height - Global_Margin * 2 - Main_Rect_Top
+};
+
+DrawLeftColumnText :: ()
 {
-    w, h : s32;
-    data := stbi_load (filename, *w, *h, null, 4);
-    if !data
-        return 0;
+    text_rect : Stylo.Rect;
+    rect := Left_Col;
+    Stylo.TruncateRect (*rect, 0, (Image_Radius + Image_Margin) * 2, 0, 0);
 
-    defer stbi_image_free (data);
+    text_rect = Stylo.PushFormattedText (
+        Text_Contact_Info,
+        xx Font_Small,
+        rect,
+        color = Text_Color,
+        overflow = .Wrap
+    );
 
-    return Stylo.CreateTexture (xx w, xx h, data);
+    Stylo.TruncateRect (*rect, 0, text_rect.h + Global_Margin, 0, 0);
+
+    text_rect = Stylo.PushFormattedText (
+        Text_Address[Lang],
+        xx Font_Small,
+        rect,
+        color = Text_Color,
+        overflow = .Wrap
+    );
+}
+
+DrawProjectEntry :: (rect : Stylo.Rect, project : Project) -> Stylo.Rect
+{
+    final_rect : Stylo.Rect;
+    text_rect : Stylo.Rect;
+
+    draw_rect := rect;
+
+    text_rect = Stylo.PushFormattedText (
+        project.name[Lang],
+        xx Font_Small,
+        draw_rect,
+        color = Text_Color,
+        overflow = .Wrap,
+        font = g_font_bold
+    );
+
+    Stylo.TruncateRect (*draw_rect, 0, text_rect.h, 0, 0);
+
+    text_rect = Stylo.PushFormattedText (
+        project.subtitle[Lang],
+        xx Font_Small,
+        draw_rect,
+        color = Text_Color,
+        overflow = .Wrap,
+    );
+
+    return text_rect;
 }
 
 main :: ()
@@ -80,25 +134,27 @@ main :: ()
     // Create framebuffer
     // Use framebuffer
 
-    me = LoadTexture ("../images/me.jpg");
+    me = Stylo.LoadTexture ("../images/me.jpg");
 
-    font := Stylo.LoadFontFromFile ("C:/Windows/Fonts/segoeui.ttf");
-    if !font
+    g_font_regular = Stylo.LoadFontFromFile ("C:/Windows/Fonts/segoeui.ttf");
+    if !g_font_regular
     {
         LogError ("Could not load font segoeui.ttf");
         return;
     }
 
-    Stylo.SetFont (font);
-    page := Stylo.LoadFontPage (font, 22);
+    Stylo.SetFont (g_font_regular);
+
+    g_font_bold = Stylo.LoadFontFromFile ("C:/Windows/Fonts/segoeuib.ttf");
+    if !g_font_bold
+    {
+        LogError ("Could not load font segoeuib.ttf");
+        return;
+    }
 
     quit := false;
     while !quit
     {
-        Stylo.SetTexture (me);
-        Stylo.PushCircle (.{Image_Radius + Image_Margin, Image_Radius + Image_Margin}, Image_Radius);
-        Stylo.SetTexture (0);
-
         for Fenetres.PollMessages ()
         {
             if it.kind == .Window_Closed
@@ -111,6 +167,12 @@ main :: ()
         glClearColor (Background_Color.r, Background_Color.g, Background_Color.b, Background_Color.a);
         glClear (GL_COLOR_BUFFER_BIT);
 
+        Stylo.SetTexture (me);
+        Stylo.PushCircle (.{Image_Radius + Image_Margin, Image_Radius + Image_Margin}, Image_Radius);
+        Stylo.SetTexture (0);
+
+        DrawLeftColumnText ();
+
         pen := Right_Col.position;
         text_rect : Stylo.Rect;
 
@@ -120,7 +182,8 @@ main :: ()
             Right_Col,
             color = Text_Color,
             align = .{0.5, 0},
-            overflow = .Wrap
+            overflow = .Wrap,
+            font = g_font_bold
         );
 
         pen.y += text_rect.h;
@@ -134,8 +197,22 @@ main :: ()
             overflow = .Wrap
         );
 
+        text_rect = Stylo.PushFormattedText (
+            Text_Presentation[Lang],
+            xx Font_Small,
+            Main_Rect,
+            color = Text_Color,
+            overflow = .Wrap
+        );
+
+        rect := Stylo.TruncateRect (Main_Rect, 0, text_rect.h + 2 * Global_Margin, 0, 0);
+
+        text_rect = DrawProjectEntry (rect, Projects[0]);
+
         Stylo.GLRenderDrawLists (viewport_w, viewport_h);
         Fenetres.SwapBuffers (window);
+
+        Basic.sleep_milliseconds (30);
     }
 
     // Get framebuffer texture data
