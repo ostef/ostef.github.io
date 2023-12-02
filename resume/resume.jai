@@ -1,41 +1,51 @@
-Basic :: #import "Basic";
-#import "Common";
+#import "Basic";
+#import "Math";
+
 Fenetres :: #import "Fenetres";
 Fenetres_GL :: #import "Fenetres/GL";
+
 #import "GL";
-#import "Linalg";
+
 Stylo :: #import "Stylo" (Origin_Top_Left = true);
+
 #import "stb_image";
 
 #load "localization.jai";
 
+Vec2f :: Vector2;
+Vec4f :: Vector4;
+
 g_font_regular : *Stylo.Font;
 g_font_bold : *Stylo.Font;
+g_font_italic : *Stylo.Font;
+g_font_bold_italic : *Stylo.Font;
 me : Stylo.TextureHandle;
 
-Lang :: Language.French;
+g_lang := Language.French;
 
 Scale :: 30.0;
 Canvas_Width :: 21.0 * Scale;
 Canvas_Height :: 29.7 * Scale;
 
-Font_Big :: 0.9 * Scale;
-Font_Medium :: 0.7 * Scale;
-Font_Small :: 0.46 * Scale;
+Font_Big :: 0.7 * Scale;
+Font_Medium :: 0.54 * Scale;
+Font_Small :: 0.367 * Scale;
 
-Background_Color :: Vec4f.{0.9,0.9,0.9,1};
+Background_Color :: Vec4f.{0.98,0.98,0.98,1};
 
 Text_Color :: Vec4f.{0,0,0,1};
-Text_Light_Color :: Vec4f.{0,0,0,1};
-Text_Accent_Color :: Vec4f.{0,0,0,1};
+Text_Light_Color :: Vec4f.{0.451, 0.451, 0.451,1};
+Text_Accent2_Color :: Vec4f.{0.176, 0.42, 0.6,1};
+Text_Accent_Color :: Vec4f.{0, 0.29, 0.678,1};
 
-Global_Margin :: 0.5 * Scale;
+Global_Margin :: 0.3 * Scale;
 
-Image_Radius :: 2.5 * Scale;
-Image_Margin :: Global_Margin * 2;
+Image_Radius :: 2.2 * Scale;
+// Make it centered in the left column
+Image_Margin :: (Canvas_Width * Left_Col_Width - Image_Radius * 2) * 0.5;
 
-Left_Col_Width :: 0.35;  // Percent
-Right_Col_Width :: 0.65;  // Percent
+Left_Col_Width :: 0.3;  // Percent
+Right_Col_Width :: 1.0 - Left_Col_Width;  // Percent
 
 Left_Col :: Stylo.Rect.{
     Global_Margin,
@@ -51,7 +61,7 @@ Right_Col :: Stylo.Rect.{
     Canvas_Height - Global_Margin * 2
 };
 
-Main_Rect_Top :: 3.0 * Scale;
+Main_Rect_Top :: 2.4 * Scale;
 
 Main_Rect :: Stylo.Rect.{
     Canvas_Width * Left_Col_Width + Global_Margin,
@@ -60,58 +70,152 @@ Main_Rect :: Stylo.Rect.{
     Canvas_Height - Global_Margin * 2 - Main_Rect_Top
 };
 
-DrawLeftColumnText :: ()
+Header_Indent :: 0.01 * Canvas_Width;
+
+Project_Date_Width :: 0.07; // Percent;
+
+DrawHeader :: inline (text : string, rect : Stylo.Rect) -> Stylo.Rect
 {
+    return Stylo.PushText (
+        text,
+        xx Font_Medium,
+        Stylo.TruncateRect (rect, left = Header_Indent),
+        color = Text_Accent_Color,
+        font = g_font_bold_italic
+    );
+}
+
+DrawLeftColumnText :: (top : float)
+{
+    Link :: (rect : Stylo.Rect, name : string, link : string) -> Stylo.Rect
+    {
+        text_rect := Stylo.PushText (
+            name,
+            xx Font_Small,
+            rect,
+            color = Text_Color,
+            overflow = .Wrap_Word,
+            font = g_font_bold
+        );
+
+        Stylo.TruncateRect (*rect, top = text_rect.h);
+
+        text_rect = Stylo.PushText (
+            link,
+            xx Font_Small,
+            rect,
+            color = Text_Color,
+            overflow = .Wrap_Word
+        );
+
+        return text_rect;
+    }
+
     text_rect : Stylo.Rect;
     rect := Left_Col;
-    Stylo.TruncateRect (*rect, 0, (Image_Radius + Image_Margin) * 2, 0, 0);
+    Stylo.TruncateRect (*rect, top = top - rect.y);
 
-    text_rect = Stylo.PushFormattedText (
+    text_rect = DrawHeader (Text_Contact_Info_Header[g_lang], rect);
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+    text_rect = Stylo.PushText (
         Text_Contact_Info,
         xx Font_Small,
         rect,
         color = Text_Color,
-        overflow = .Wrap
+        overflow = .Wrap_Word
     );
 
-    Stylo.TruncateRect (*rect, 0, text_rect.h + Global_Margin, 0, 0);
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
 
-    text_rect = Stylo.PushFormattedText (
-        Text_Address[Lang],
+    text_rect = Link (rect, "Linkedin", "https://www.linkedin.com/in/stefan-oumansour");
+
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+    text_rect = Link (rect, "GitHub", "https://github.com/ostef");
+
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+    text_rect = Link (rect, "Portfolio", "https://ostef.github.io");
+
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin * 1.5);
+
+    text_rect = DrawHeader (Text_Languages_Header[g_lang], rect);
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+    text_rect = Stylo.PushText (
+        Text_Languages[g_lang],
         xx Font_Small,
         rect,
         color = Text_Color,
-        overflow = .Wrap
+        overflow = .Wrap_Word
+    );
+
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin * 1.5);
+
+    text_rect = DrawHeader ("Soft Skills", rect);
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+    text_rect = Stylo.PushText (
+        Text_Soft_Skills[g_lang],
+        xx Font_Small,
+        rect,
+        color = Text_Color,
+        overflow = .Wrap_Word
+    );
+
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin * 1.5);
+
+    text_rect = DrawHeader (Text_Interests_Header[g_lang], rect);
+    Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+    text_rect = Stylo.PushText (
+        Text_Interests[g_lang],
+        xx Font_Small,
+        rect,
+        color = Text_Color,
+        overflow = .Wrap_Word
     );
 }
 
 DrawProjectEntry :: (rect : Stylo.Rect, project : Project) -> Stylo.Rect
 {
+    dates_rect := Stylo.Rect.{rect.x, rect.y, Project_Date_Width * Canvas_Width, rect.h};
+    Stylo.PushText (
+        project.dates[g_lang],
+        xx Font_Small,
+        dates_rect,
+        color = Text_Light_Color,
+        overflow = .Wrap_Word,
+        font = g_font_italic
+    );
+
+    draw_rect := Stylo.TruncateRect (rect, left = dates_rect.w + Global_Margin);
     final_rect : Stylo.Rect;
     text_rect : Stylo.Rect;
 
-    draw_rect := rect;
-
-    text_rect = Stylo.PushFormattedText (
-        project.name[Lang],
+    text_rect = Stylo.PushText (
+        project.name[g_lang],
         xx Font_Small,
         draw_rect,
         color = Text_Color,
-        overflow = .Wrap,
+        overflow = .Wrap_Word,
         font = g_font_bold
     );
 
+    final_rect = text_rect;
+
     Stylo.TruncateRect (*draw_rect, 0, text_rect.h, 0, 0);
 
-    text_rect = Stylo.PushFormattedText (
-        project.subtitle[Lang],
+    text_rect = Stylo.PushText (
+        project.description[g_lang],
         xx Font_Small,
         draw_rect,
         color = Text_Color,
-        overflow = .Wrap,
+        overflow = .Wrap_Word,
     );
 
-    return text_rect;
+    final_rect.h += text_rect.h;
+
+    return final_rect;
 }
 
 main :: ()
@@ -136,20 +240,46 @@ main :: ()
 
     me = Stylo.LoadTexture ("../images/me.jpg");
 
-    g_font_regular = Stylo.LoadFontFromFile ("C:/Windows/Fonts/segoeui.ttf");
+    g_font_regular = Stylo.LoadFontFromFile ("OpenSans-Regular.ttf");
     if !g_font_regular
     {
-        LogError ("Could not load font segoeui.ttf");
+        log_error ("Could not load font OpenSans-Regular.ttf");
         return;
     }
 
-    Stylo.SetFont (g_font_regular);
+    Stylo.SetDefaultFont (g_font_regular);
 
-    g_font_bold = Stylo.LoadFontFromFile ("C:/Windows/Fonts/segoeuib.ttf");
+    g_font_bold = Stylo.LoadFontFromFile ("OpenSans-Bold.ttf");
     if !g_font_bold
     {
-        LogError ("Could not load font segoeuib.ttf");
+        log_error ("Could not load font OpenSans-Bold.ttf");
         return;
+    }
+
+    g_font_italic = Stylo.LoadFontFromFile ("OpenSans-Italic.ttf");
+    if !g_font_bold
+    {
+        log_error ("Could not load font OpenSans-Italic.ttf");
+        return;
+    }
+
+    g_font_bold_italic = Stylo.LoadFontFromFile ("OpenSans-BoldItalic.ttf");
+    if !g_font_bold
+    {
+        log_error ("Could not load font OpenSans-BoldItalic.ttf");
+        return;
+    }
+
+    args := get_command_line_arguments ();
+    for args
+    {
+        if it ==
+        {
+        case "-fr";
+            g_lang = .French;
+        case "-en";
+            g_lang = .English;
+        }
     }
 
     quit := false;
@@ -164,55 +294,130 @@ main :: ()
         viewport_w, viewport_h := Fenetres.GetViewportSize (window);
 
         glViewport (0, 0, xx viewport_w, xx viewport_h);
-        glClearColor (Background_Color.r, Background_Color.g, Background_Color.b, Background_Color.a);
+        glClearColor (Background_Color.x, Background_Color.y, Background_Color.z, Background_Color.w);
         glClear (GL_COLOR_BUFFER_BIT);
 
         Stylo.SetTexture (me);
         Stylo.PushCircle (.{Image_Radius + Image_Margin, Image_Radius + Image_Margin}, Image_Radius);
         Stylo.SetTexture (0);
 
-        DrawLeftColumnText ();
-
-        pen := Right_Col.position;
         text_rect : Stylo.Rect;
 
-        text_rect = Stylo.PushFormattedText (
-            "Stéfan Oumansour",
+        text_rect = Stylo.PushText (
+            "Stéfan OUMANSOUR",
             xx Font_Big,
             Right_Col,
-            color = Text_Color,
-            align = .{0.5, 0},
-            overflow = .Wrap,
+            color = Text_Accent_Color,
+            overflow = .Wrap_Word,
             font = g_font_bold
         );
 
-        pen.y += text_rect.h;
-
-        text_rect = Stylo.PushFormattedText (
-            Text_Student[Lang],
+        text_rect = Stylo.PushText (
+            Text_Student[g_lang],
             xx Font_Medium,
-            .{pen.x, pen.y, Right_Col.w, Right_Col.h - pen.y},
-            color = Text_Color,
-            align = .{0.5, 0},
-            overflow = .Wrap
+            Stylo.TruncateRect (Right_Col, top = text_rect.h),
+            color = Text_Accent2_Color,
         );
 
-        text_rect = Stylo.PushFormattedText (
-            Text_Presentation[Lang],
+        rect := Main_Rect;
+
+        text_rect = Stylo.PushText (
+            Text_Presentation[g_lang],
             xx Font_Small,
             Main_Rect,
             color = Text_Color,
-            overflow = .Wrap
+            overflow = .Wrap_Word
         );
 
-        rect := Stylo.TruncateRect (Main_Rect, 0, text_rect.h + 2 * Global_Margin, 0, 0);
+        Stylo.TruncateRect (*rect, top = text_rect.h + 1.5 * Global_Margin);
 
-        text_rect = DrawProjectEntry (rect, Projects[0]);
+        DrawLeftColumnText (rect.y);
 
-        Stylo.GLRenderDrawLists (viewport_w, viewport_h);
+        text_rect = DrawHeader (Text_Projects_Header[g_lang], rect);
+        Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+        for Projects
+        {
+            if it_index != 0
+                Stylo.TruncateRect (*rect, top = text_rect.h + 0.7 * Global_Margin);
+            text_rect = DrawProjectEntry (rect, it);
+        }
+
+        Stylo.TruncateRect (*rect, top = text_rect.h + 1.5 * Global_Margin);
+
+        text_rect = DrawHeader (Text_Education_Header[g_lang], rect);
+        Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+        dates_rect := rect;
+        dates_width : float;
+        for Education
+        {
+            text_rect := Stylo.PushText (
+                it.dates[g_lang],
+                xx Font_Small,
+                dates_rect,
+                color = Text_Light_Color,
+                overflow = .None,
+                font = g_font_italic
+            );
+
+            Stylo.TruncateRect (*dates_rect, top = text_rect.h);
+
+            dates_width = max (dates_width, text_rect.w);
+        }
+
+        for Education
+        {
+            if it_index != 0
+                Stylo.TruncateRect (*rect, top = text_rect.h);
+
+            text_rect = Stylo.PushText (
+                it.text[g_lang],
+                xx Font_Small,
+                Stylo.TruncateRect (rect, left = dates_width + Global_Margin),
+                color = Text_Color,
+                overflow = .None
+            );
+        }
+
+        Stylo.TruncateRect (*rect, top = text_rect.h + 1.5 * Global_Margin);
+
+        DrawHeader (Text_Technical_Skills_Header[g_lang], rect);
+        Stylo.TruncateRect (*rect, top = text_rect.h + Global_Margin);
+
+        text_rect = Stylo.PushText (
+            Text_Technical_Skills_General[g_lang],
+            xx Font_Small,
+            rect,
+            color = Text_Color,
+            overflow = .None
+        );
+
+        Stylo.TruncateRect (*rect, left = text_rect.w + 3 * Global_Margin);
+
+        text_rect = Stylo.PushText (
+            Text_Technical_Skills_Languages[g_lang],
+            xx Font_Small,
+            rect,
+            color = Text_Color,
+            overflow = .None
+        );
+
+        Stylo.TruncateRect (*rect, left = text_rect.w + 3 * Global_Margin);
+
+        text_rect = Stylo.PushText (
+            Text_Technical_Skills_Other,
+            xx Font_Small,
+            rect,
+            color = Text_Color,
+            overflow = .None
+        );
+
+        Stylo.GLRenderCommandLists (Stylo.GetGlobalCommandLists (), viewport_w, viewport_h);
+
         Fenetres.SwapBuffers (window);
 
-        Basic.sleep_milliseconds (30);
+        sleep_milliseconds (30);
     }
 
     // Get framebuffer texture data
