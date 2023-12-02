@@ -23,13 +23,12 @@ me : Stylo.TextureHandle;
 
 g_lang := Language.French;
 
-Scale :: 30.0;
-Canvas_Width :: 21.0 * Scale;
-Canvas_Height :: 29.7 * Scale;
+Default_Scale :: 37.7953; // 96 DPI = 37.7953 DPCM
 
-Font_Big :: 0.7 * Scale;
-Font_Medium :: 0.54 * Scale;
-Font_Small :: 0.367 * Scale;
+Scale : float;
+Canvas_Width, Canvas_Height : float;
+
+Font_Big, Font_Medium, Font_Small : float;
 
 Background_Color :: Vec4f.{0.98,0.98,0.98,1};
 
@@ -38,41 +37,66 @@ Text_Light_Color :: Vec4f.{0.451, 0.451, 0.451,1};
 Text_Accent2_Color :: Vec4f.{0.176, 0.42, 0.6,1};
 Text_Accent_Color :: Vec4f.{0, 0.29, 0.678,1};
 
-Global_Margin :: 0.3 * Scale;
+Global_Margin : float;
 
-Image_Radius :: 2.2 * Scale;
+Image_Radius : float;
 // Make it centered in the left column
-Image_Margin :: (Canvas_Width * Left_Col_Width - Image_Radius * 2) * 0.5;
+Image_Margin : float;
 
 Left_Col_Width :: 0.3;  // Percent
 Right_Col_Width :: 1.0 - Left_Col_Width;  // Percent
 
-Left_Col :: Stylo.Rect.{
-    Global_Margin,
-    Global_Margin,
-    Canvas_Width * Left_Col_Width - Global_Margin * 2,
-    Canvas_Height - Global_Margin * 2
-};
+Left_Col : Stylo.Rect;
+Right_Col : Stylo.Rect;
 
-Right_Col :: Stylo.Rect.{
-    Canvas_Width * Left_Col_Width + Global_Margin,
-    Global_Margin,
-    Canvas_Width * Right_Col_Width - Global_Margin * 2,
-    Canvas_Height - Global_Margin * 2
-};
+Main_Rect_Top : float;
 
-Main_Rect_Top :: 2.4 * Scale;
+Main_Rect : Stylo.Rect;
 
-Main_Rect :: Stylo.Rect.{
-    Canvas_Width * Left_Col_Width + Global_Margin,
-    Main_Rect_Top + Global_Margin,
-    Canvas_Width * Right_Col_Width - Global_Margin * 2,
-    Canvas_Height - Global_Margin * 2 - Main_Rect_Top
-};
-
-Header_Indent :: 0.01 * Canvas_Width;
+Header_Indent : float;
 
 Project_Date_Width :: 0.07; // Percent;
+
+SetScale :: (scale : float)
+{
+    Scale = scale;
+    Canvas_Width = 21.0 * Scale;
+    Canvas_Height = 29.7 * Scale;
+
+    Font_Big = 0.7 * Scale;
+    Font_Medium = 0.54 * Scale;
+    Font_Small = 0.367 * Scale;
+    Global_Margin = 0.3 * Scale;
+
+    Image_Radius = 2.2 * Scale;
+    // Make it centered in the left column
+    Image_Margin = (Canvas_Width * Left_Col_Width - Image_Radius * 2) * 0.5;
+
+    Left_Col = Stylo.Rect.{
+        Global_Margin,
+        Global_Margin,
+        Canvas_Width * Left_Col_Width - Global_Margin * 2,
+        Canvas_Height - Global_Margin * 2
+    };
+
+    Right_Col = Stylo.Rect.{
+        Canvas_Width * Left_Col_Width + Global_Margin,
+        Global_Margin,
+        Canvas_Width * Right_Col_Width - Global_Margin * 2,
+        Canvas_Height - Global_Margin * 2
+    };
+
+    Main_Rect_Top = 2.4 * Scale;
+
+    Main_Rect = Stylo.Rect.{
+        Canvas_Width * Left_Col_Width + Global_Margin,
+        Main_Rect_Top + Global_Margin,
+        Canvas_Width * Right_Col_Width - Global_Margin * 2,
+        Canvas_Height - Global_Margin * 2 - Main_Rect_Top
+    };
+
+    Header_Indent = 0.01 * Canvas_Width;
+}
 
 DrawHeader :: inline (text : string, rect : Stylo.Rect) -> Stylo.Rect
 {
@@ -220,6 +244,36 @@ DrawProjectEntry :: (rect : Stylo.Rect, project : Project) -> Stylo.Rect
 
 main :: ()
 {
+    next_is_scale : bool;
+    args := get_command_line_arguments ();
+    for args
+    {
+        if next_is_scale
+        {
+            result, ok := string_to_float (it);
+            if !ok
+            {
+                log_error ("Error: expected float value for -scale");
+                return;
+            }
+
+            SetScale (result);
+            next_is_scale = false;
+        }
+        else if it ==
+        {
+        case "-fr";
+            g_lang = .French;
+        case "-en";
+            g_lang = .English;
+        case "-scale";
+            next_is_scale = true;
+        }
+    }
+
+    if Scale <= 0
+        SetScale (Default_Scale);
+
     window := Fenetres.CreateWindow (
         "Resume",
         cast (s32) Canvas_Width,
@@ -268,18 +322,6 @@ main :: ()
     {
         log_error ("Could not load font OpenSans-BoldItalic.ttf");
         return;
-    }
-
-    args := get_command_line_arguments ();
-    for args
-    {
-        if it ==
-        {
-        case "-fr";
-            g_lang = .French;
-        case "-en";
-            g_lang = .English;
-        }
     }
 
     quit := false;
