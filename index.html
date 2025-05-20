@@ -13,59 +13,59 @@
 <body>
     <script>
 
-const PreviewImage = function (img_elem)
+const PreviewImage = function(img_elem)
 {
-    document.getElementById ("image-preview-modal").style.display = "block";
-    document.getElementById ("preview-image").src = img_elem.src;
-    document.getElementById ("preview-caption").innerHTML = img_elem.alt;
+    document.getElementById("image-preview-modal").style.display = "block";
+    document.getElementById("preview-image").src = img_elem.src;
+    document.getElementById("preview-caption").innerHTML = img_elem.alt;
 }
 
-const CloseImagePreview = function ()
+const CloseImagePreview = function()
 {
-    document.getElementById ("image-preview-modal").style.display = "none";
+    document.getElementById("image-preview-modal").style.display = "none";
 }
 
-const ScrollTo = function (id)
+const ScrollTo = function(id)
 {
-    const elem = document.getElementById (id);
+    const elem = document.getElementById(id);
     if (elem)
-        elem.scrollIntoView ({behavior: "smooth"});
+        elem.scrollIntoView({behavior: "smooth"});
 }
 
-const Disappear = function (elem, duration = 300)
+const Disappear = function(elem, duration = 300)
 {
-    const anim = elem.animate ([ {opacity: 0} ], {duration: duration});
-    anim.onfinish = function () {
+    const anim = elem.animate([ {opacity: 0} ], {duration: duration});
+    anim.onfinish = function() {
         elem.style.display = "none";
     }
 }
 
-const ToggleDarkMode = function ()
+const ToggleDarkMode = function()
 {
     const html = document.documentElement;
-    const theme = html.getAttribute ("data-theme");
-    const btn = document.getElementById ("dark-mode-button");
+    const theme = html.getAttribute("data-theme");
+    const btn = document.getElementById("dark-mode-button");
 
     if (theme === "light")
     {
-        btn.setAttribute ("src", "./images/light-mode.png");
-        html.setAttribute ("data-theme", "dark");
+        btn.setAttribute("src", "./images/light-mode.png");
+        html.setAttribute("data-theme", "dark");
     }
     else
     {
-        btn.setAttribute ("src", "./images/dark-mode.png");
-        html.setAttribute ("data-theme", "light");
+        btn.setAttribute("src", "./images/dark-mode.png");
+        html.setAttribute("data-theme", "light");
     }
 }
 
-document.body.onscroll = function ()
+document.body.onscroll = function()
 {
     const D = document.documentElement;
 
-    const appear_on_scroll = document.getElementsByClassName ("appear-on-scroll");
+    const appear_on_scroll = document.getElementsByClassName("appear-on-scroll");
     for (const elem of appear_on_scroll)
     {
-        const opacity = window.getComputedStyle (elem).getPropertyValue ("opacity");
+        const opacity = window.getComputedStyle(elem).getPropertyValue("opacity");
         if (opacity > 0)
             continue;
 
@@ -75,24 +75,24 @@ document.body.onscroll = function ()
 
         if (D.scrollTop + D.clientHeight > elem.offsetTop + revealMargin)
         {
-            const anim = elem.animate ([ {opacity: 1} ], {id: "scroll-appearing", duration: 400});
+            const anim = elem.animate([ {opacity: 1} ], {id: "scroll-appearing", duration: 400});
 
-            anim.onfinish = function () {
+            anim.onfinish = function() {
                 elem.style.opacity = 1;
             }
         }
     }
 
-    const disappear_on_scroll = document.getElementsByClassName ("disappear-on-scroll");
+    const disappear_on_scroll = document.getElementsByClassName("disappear-on-scroll");
     for (const elem of disappear_on_scroll)
     {
-        const opacity = window.getComputedStyle (elem).getPropertyValue ("opacity");
+        const opacity = window.getComputedStyle(elem).getPropertyValue("opacity");
         if (opacity < 1 || elem.style.display == "none")
             continue;
 
-        const anim = elem.animate ([ {opacity: 0} ], {id: "scroll-disappearing", duration: 300});
+        const anim = elem.animate([ {opacity: 0} ], {id: "scroll-disappearing", duration: 300});
 
-        anim.onfinish = function () {
+        anim.onfinish = function() {
             elem.style.display = "none";
         }
     }
