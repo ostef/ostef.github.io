@@ -40,23 +40,51 @@ const Disappear = function(elem, duration = 300)
     }
 }
 
+const SetTheme = function(theme)
+{
+    if (theme !== "light" && theme !== "dark")
+    {
+        console.error("Invalid theme " + theme);
+        return;
+    }
+
+    const html = document.documentElement;
+    const btn = document.getElementById("dark-mode-button");
+
+    html.setAttribute("data-theme", theme);
+    UpdateDarkModeButton();
+
+    localStorage.theme = theme;
+}
+
 const ToggleDarkMode = function()
 {
     const html = document.documentElement;
     const theme = html.getAttribute("data-theme");
-    const btn = document.getElementById("dark-mode-button");
 
     if (theme === "light")
-    {
-        btn.setAttribute("src", "./images/light-mode.png");
-        html.setAttribute("data-theme", "dark");
-    }
+        SetTheme("dark");
     else
+        SetTheme("light");
+}
+
+const UpdateDarkModeButton = function()
+{
+    const html = document.documentElement;
+    const btn = document.getElementById("dark-mode-button");
+    const theme = html.getAttribute("data-theme");
+
+    if (btn)
     {
-        btn.setAttribute("src", "./images/dark-mode.png");
-        html.setAttribute("data-theme", "light");
+        if (theme === "light")
+            btn.setAttribute("src", "./images/dark-mode.png");
+        else
+            btn.setAttribute("src", "./images/light-mode.png");
     }
 }
+
+if (localStorage.theme)
+    SetTheme(localStorage.theme);
 
 document.body.onscroll = function()
 {
@@ -100,7 +128,11 @@ document.body.onscroll = function()
 
     </script>
 
-    <img id="dark-mode-button" src="./images/dark-mode.png" onclick="ToggleDarkMode ()" width=50>
+    <img id="dark-mode-button" src="./images/dark-mode.png" onclick="ToggleDarkMode()" width=50>
+<script>
+// Do this after the button has been loaded
+UpdateDarkModeButton();
+</script>
 
     <section class="container">
 
@@ -115,7 +147,7 @@ document.body.onscroll = function()
                     See my resume (<a href="./images/resume_EN.pdf" target="_blank">EN</a> - <a href="./images/resume_FR.pdf" target="_blank">FR</a>)
                 </div>
             </div>
-            <button class="disappear-on-scroll" onclick="ScrollTo ('background'); Disappear (this)">↓ Scroll Down ↓</button>
+            <button class="disappear-on-scroll" onclick="ScrollTo('background'); Disappear(this)">↓ Scroll Down ↓</button>
         </section>
 
         <section id="background" class="text-section appear-on-scroll">
@@ -304,7 +336,7 @@ document.body.onscroll = function()
     </footer>
 
     <div id="image-preview-modal" class="modal">
-        <span class="close" onclick="CloseImagePreview ()">&times;</span>
+        <span class="close" onclick="CloseImagePreview()">&times;</span>
         <div class="modal-content">
             <img id="preview-image">
             <div id="preview-caption"></div>
