@@ -309,8 +309,9 @@ UpdateDarkModeButton();
                     <p style="font-size: 0.9rem;">
                         As the name suggests, this project is a programming language project.
                         The goal is to learn the inner workings of a tool I use everyday: a programming language compiler!
-                        The language currently parses and typechecks source code to produce transpiled C code, although the goal is to ultimately
-                        produce machine code directly, either via LLVM or with a hand-written backend.
+                        The compiler currently parses, typechecks, and generates an intermediate SSA form representation for a simple imperative programming language.
+                        This intermediate representation is either compiled then interpreter as bytecode, or used to generate a very similar QBE IR code to output machine code.
+                        Ultimately the goal is to write our own optimizing backend for x86_64 and ARM64 CPUs.
                         The design of the language resembles C, with safety features and defaults such as array bounds check and automatic initialization.
                         When the basics are nailed down, I will involve more time and effort into language design.
                         <br>
@@ -341,9 +342,10 @@ UpdateDarkModeButton();
                 <div>
                     <strong>Engines, Libraries & Tools</strong>
                     <ul>
-                        <li>OpenGL 4.6</li>
-                        <li>Metal</li>
+                        <li>Vulkan</li>
                         <li>DirectX 12</li>
+                        <li>Metal</li>
+                        <li>OpenGL 4.6</li>
                         <li>ImGui</li>
                         <li>Blender</li>
                         <li>Unity</li>
