@@ -1,14 +1,16 @@
-Madame, Monsieur,
+Bonjour,
 
-Votre moteur interne, la rigueur technique de vos productions et l'ambition de titres comme A Plague Tale ou Microsoft Flight Simulator m'ont convaincu de vous soumettre ma candidature spontanée en tant que développeur moteur.
+Votre moteur interne, la rigueur technique de vos productions et l'ambition de titres comme A Plague Tale ou Microsoft Flight Simulator m'ont donné envie de rejoindre votre équipe en tant que développeur moteur.
 
-J'ai passé un an et demi à travailler sur le moteur interne du studio Fomenko, sur un jeu d'aventure et d'énigmes. En parallèle, je développe mon propre moteur et ses outils depuis deux ans et demi, et travaille sur des projets en lien avec le jeu vidéo depuis plus de six ans. Sur ces différentes expériences, j'ai travaillé extensivement sur le rendu 3D, construisant un moteur de rendu de A à Z en C++ avec les APIs graphiques modernes. J'ai aussi contribué à d'autres pans du moteur : éditeur, objets de gameplay et outillages.
+J'ai passé un an et demi à travailler sur le moteur interne du studio Fomenko, sur un jeu d'aventure et d'énigmes. En parallèle, je développe mon propre moteur et ses outils depuis deux ans et demi, et travaille sur des projets personnels en lien avec le jeu vidéo depuis plus de six ans.
 
-J'ai également conçu mon propre langage de programmation, c'est un sujet de niche mais bien présent dans les moteurs de jeux modernes via les outils de scripting. Ces outils sont au coeur de l'expérience des équipes qui travaillent avec votre moteur, aussi bien au pour les gameplays programmers que pour les artistes, ce qui rend mon profil d'autant plus pertinent.
+Sur ces différentes expériences, j'ai travaillé extensivement sur le rendu 3D, construisant un moteur de rendu de A à Z en C++ avec les APIs graphiques modernes. J'ai aussi contribué à d'autres parties du moteur : éditeur, objets de gameplay et outillages.
+
+J'ai également conçu mon propre langage de programmation, c'est un sujet de niche mais bien présent dans les moteurs de jeux modernes via les outils de scripting qui sont au coeur de l'expérience des équipes qui travaillent avec votre moteur, ce qui rend mon profil d'autant plus pertinent et unique.
 
 Je vous invite à visiter mon portfolio pour avoir une meilleure idée de mon travail: https://ostef.github.io
 
 Je suis disponible dès octobre et prêt à me relocaliser à Bordeaux.
 
-Cordialement
+Bonne journée,
 Stéfan Oumansour
